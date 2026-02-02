@@ -1,145 +1,102 @@
 package com.example.fragments;
 
 import android.content.Context;
-import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
-
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
+/**
+ * A custom view that renders animated pixelated stars.
+ */
 public class PixelStarView extends View {
 
-    private static final int STAR_COUNT = 140;
-    private static final int STAR_SIZE = 5;
-    private static final int GLOW_RADIUS = 5;
-    private static final int BLUR_RADIUS = 12;
-    private static final int MAX_SHOOTING_STARS = 15;
-
-
-    private float[] x = new float[STAR_COUNT];
-    private float[] y = new float[STAR_COUNT];
-    private float[] baseAlpha = new float[STAR_COUNT];
-    private float[] twinkleProgress = new float[STAR_COUNT];
-    private float[] twinkleSpeed = new float[STAR_COUNT];
-    private float[] speed = new float[STAR_COUNT];
-
-    private Paint starPaint = new Paint();
-    private Paint glowPaint = new Paint();
-
-    private Random random = new Random();
-
-    private ShootingStar[] shootingStars = new ShootingStar[MAX_SHOOTING_STARS];
+    private final Paint starPaint = new Paint();
+    private final List<Star> stars = new ArrayList<>();
+    private final Random random = new Random();
+    
+    // Pixel size for the "blocky" retro look
+    private static final int PIXEL_SIZE = 8;
+    private static final int STAR_COUNT = 40;
 
     public PixelStarView(Context context, AttributeSet attrs) {
         super(context, attrs);
-
-        setLayerType(LAYER_TYPE_SOFTWARE, null);
-
-        starPaint.setColor(0xFFFFFFFF);
+        // Disable anti-aliasing for sharp pixel edges
         starPaint.setAntiAlias(false);
-
-        glowPaint.setColor(0x66FFFFFF);
-        glowPaint.setMaskFilter(new BlurMaskFilter(BLUR_RADIUS, BlurMaskFilter.Blur.NORMAL));
     }
-
-    private class ShootingStar {
-        float x, y, speedX, speedY;
-        int alpha = 255;
-
-        ShootingStar() {
-            x = random.nextInt(Math.max(1, getWidth()));
-            y = 0;
-            speedX = (random.nextFloat() - 0.5f) * 10;
-            speedY = 10 + random.nextFloat() * 10;
-        }
-
-        void update() {
-            x += speedX;
-            y += speedY;
-            alpha -= 5;
-        }
-
-        boolean isVisible() {
-            return alpha > 0 && y < getHeight() && x > 0 && x < getWidth();
-        }
-
-        void draw(Canvas canvas, Paint paint) {
-            paint.setAlpha(alpha);
-            canvas.drawRect(x, y, x + STAR_SIZE, y + STAR_SIZE, paint);
-        }
-    }
-
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        if (w <= 0 || h <= 0) return;
+        if (w > 0 && h > 0) {
+            initStars(w, h);
+        }
+    }
 
+    private void initStars(int width, int height) {
+        stars.clear();
         for (int i = 0; i < STAR_COUNT; i++) {
-            x[i] = random.nextInt(w);
-            y[i] = random.nextInt(h);
-            baseAlpha[i] = 0.2f + random.nextFloat() * 0.5f;
-            twinkleProgress[i] = random.nextFloat() * (float) (2 * Math.PI);
-            twinkleSpeed[i] = 0.01f + random.nextFloat() * 0.04f;
-            speed[i] = 0.2f + random.nextFloat() * 0.5f;
+            stars.add(new Star(
+                    random.nextInt(width),
+                    random.nextInt(height),
+                    random.nextInt(2) + 1, // Star size: 1 or 2 pixels
+                    random.nextFloat()     // Initial alpha
+            ));
         }
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        
-        // Don't animate in preview to save resources and avoid flicker
-        boolean isPreview = isInEditMode();
 
-        int width = getWidth();
-        int height = getHeight();
-        if (width <= 0 || height <= 0) return;
+        for (Star star : stars) {
+            star.update();
+            starPaint.setColor(Color.WHITE);
+            starPaint.setAlpha((int) (star.alpha * 255));
+            
+            // Snap coordinates to pixel grid
+            float snappedX = (int)(star.x / PIXEL_SIZE) * PIXEL_SIZE;
+            float snappedY = (int)(star.y / PIXEL_SIZE) * PIXEL_SIZE;
+            float size = star.size * PIXEL_SIZE;
 
-        for (int i = 0; i < STAR_COUNT; i++) {
-            if (!isPreview) {
-                y[i] += speed[i];
-                if (y[i] > height) {
-                    y[i] = 0;
-                    x[i] = random.nextInt(width);
-                }
-                twinkleProgress[i] += twinkleSpeed[i];
-            }
-
-            float pulse = (float) Math.abs(Math.sin(twinkleProgress[i]));
-            float alpha = baseAlpha[i] * (0.3f + pulse * 0.7f);
-            int a = (int) (alpha * 255);
-
-            starPaint.setAlpha(a);
-            glowPaint.setAlpha(a / 2);
-
-            canvas.drawCircle(x[i] + STAR_SIZE / 2f, y[i] + STAR_SIZE / 2f, GLOW_RADIUS, glowPaint);
-            canvas.drawRect(x[i], y[i], x[i] + STAR_SIZE, y[i] + STAR_SIZE, starPaint);
+            canvas.drawRect(snappedX, snappedY, snappedX + size, snappedY + size, starPaint);
         }
 
-        if (!isPreview) {
-            if (random.nextInt(200) == 0) {
-                for (int i = 0; i < MAX_SHOOTING_STARS; i++) {
-                    if (shootingStars[i] == null || !shootingStars[i].isVisible()) {
-                        shootingStars[i] = new ShootingStar();
-                        break;
-                    }
-                }
-            }
+        // Keep animating
+        postInvalidateOnAnimation();
+    }
 
-            for (int i = 0; i < MAX_SHOOTING_STARS; i++) {
-                if (shootingStars[i] != null) {
-                    shootingStars[i].update();
-                    if (shootingStars[i].isVisible()) {
-                        shootingStars[i].draw(canvas, starPaint);
-                    } else {
-                        shootingStars[i] = null;
-                    }
-                }
+    /**
+     * Internal class to represent a single star and its animation state.
+     */
+    private class Star {
+        float x, y;
+        int size;
+        float alpha;
+        float alphaSpeed;
+
+        Star(float x, float y, int size, float alpha) {
+            this.x = x;
+            this.y = y;
+            this.size = size;
+            this.alpha = alpha;
+            // Randomize twinkle speed
+            this.alphaSpeed = 0.005f + random.nextFloat() * 0.015f;
+        }
+
+        void update() {
+            alpha += alphaSpeed;
+            if (alpha > 1.0f) {
+                alpha = 1.0f;
+                alphaSpeed = -Math.abs(alphaSpeed);
+            } else if (alpha < 0.1f) {
+                alpha = 0.1f;
+                alphaSpeed = Math.abs(alphaSpeed);
             }
-            postInvalidateOnAnimation();
         }
     }
 }

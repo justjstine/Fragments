@@ -3,7 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent">
+    android:background="@drawable/bg_nebula">
+
+    <com.example.fragments.PixelStarView
+        android:id="@+id/starView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <LinearLayout
         android:id="@+id/characterLayout"
@@ -17,6 +22,7 @@
         android:layout_marginTop="80dp">
 
         <LinearLayout
+            android:id="@+id/kiboContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -38,6 +44,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/lumaContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"

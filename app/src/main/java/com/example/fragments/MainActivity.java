@@ -1,11 +1,15 @@
 package com.example.fragments;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.AnticipateOvershootInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,13 +27,14 @@ public class MainActivity extends AppCompatActivity {
     private ImageView nebulaLayer;
     private TextView tapToStartText;
     private View mainContent;
+    private View flashOverlay;
     private MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        // Make the layout draw under the system bars (edge-to-edge)
+
+        // Edge-to-edge layout setup
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             getWindow().getAttributes().layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
@@ -40,22 +45,95 @@ public class MainActivity extends AppCompatActivity {
         nebulaLayer = findViewById(R.id.nebulaLayer);
         tapToStartText = findViewById(R.id.tapToStartText);
         mainContent = findViewById(R.id.mainContent);
+        flashOverlay = findViewById(R.id.flashOverlay);
+
+        // Initially hide content for the intro sequence
+        mainContent.setAlpha(0f);
+        mainContent.setScaleX(0.5f);
+        mainContent.setScaleY(0.5f);
+        tapToStartText.setAlpha(0f);
 
         animateNebula();
-        animateTapToStart();
         hideSystemUI();
         startBackgroundMusic();
 
-        findViewById(android.R.id.content).setOnClickListener(v -> {
-            playTapSfx();
-            showIntroScene();
+        startOpeningSequence();
+    }
+
+    private void startOpeningSequence() {
+        flashOverlay.setVisibility(View.VISIBLE);
+        flashOverlay.setAlpha(1f);
+
+        // 1. Flash white then fade out
+        ObjectAnimator flashOut = ObjectAnimator.ofFloat(flashOverlay, View.ALPHA, 1f, 0f);
+        flashOut.setDuration(1000);
+        flashOut.setStartDelay(200);
+
+        // 2. Title Zoom In
+        ObjectAnimator titleScaleX = ObjectAnimator.ofFloat(mainContent, View.SCALE_X, 0.5f, 1f);
+        ObjectAnimator titleScaleY = ObjectAnimator.ofFloat(mainContent, View.SCALE_Y, 0.5f, 1f);
+        ObjectAnimator titleAlpha = ObjectAnimator.ofFloat(mainContent, View.ALPHA, 0f, 1f);
+
+        AnimatorSet titleAnimation = new AnimatorSet();
+        titleAnimation.playTogether(titleScaleX, titleScaleY, titleAlpha);
+        titleAnimation.setDuration(1200);
+        titleAnimation.setInterpolator(new AnticipateOvershootInterpolator(1.2f));
+
+        // 3. Tap to Start appears
+        ObjectAnimator tapAlpha = ObjectAnimator.ofFloat(tapToStartText, View.ALPHA, 0f, 1f);
+        tapAlpha.setDuration(800);
+
+        AnimatorSet sequence = new AnimatorSet();
+        sequence.playSequentially(flashOut, titleAnimation, tapAlpha);
+
+        sequence.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                flashOverlay.setVisibility(View.GONE);
+                animateTapToStart();
+
+                // Enable click only after sequence is done
+                findViewById(android.R.id.content).setOnClickListener(v -> {
+                    playTapSfx();
+                    performFlashAndProceed();
+                });
+            }
         });
+
+        sequence.start();
+    }
+
+    private void performFlashAndProceed() {
+        findViewById(android.R.id.content).setOnClickListener(null);
+
+        flashOverlay.setVisibility(View.VISIBLE);
+        ObjectAnimator flashIn = ObjectAnimator.ofFloat(flashOverlay, View.ALPHA, 0f, 1f);
+        flashIn.setDuration(150);
+
+        ObjectAnimator flashOut = ObjectAnimator.ofFloat(flashOverlay, View.ALPHA, 1f, 0f);
+        flashOut.setDuration(500);
+
+        flashIn.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                showIntroScene(); // This now calls the method that loads SummerFragment
+                flashOut.start();
+            }
+        });
+
+        flashOut.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                flashOverlay.setVisibility(View.GONE);
+            }
+        });
+
+        flashIn.start();
     }
 
     private void playTapSfx() {
         MediaPlayer sfxPlayer = MediaPlayer.create(this, R.raw.sfx_tap_to_start);
         if (sfxPlayer != null) {
-            // Set volume to a very soft level (0.0 to 1.0)
             sfxPlayer.setVolume(0.05f, 0.05f);
             sfxPlayer.setOnCompletionListener(MediaPlayer::release);
             sfxPlayer.start();
@@ -63,23 +141,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showIntroScene() {
-        mainContent.setVisibility(View.GONE);
-        tapToStartText.setVisibility(View.GONE);
+        // We DON'T hide mainContent anymore if you want to see it behind the popup.
+        // If you want the background black, keep mainContent.setVisibility(View.GONE);
 
-        IntroSceneFragment introFragment = new IntroSceneFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-        transaction.replace(R.id.fragment_container, introFragment);
-        transaction.commit();
-        
-        findViewById(android.R.id.content).setOnClickListener(null);
+        // Create the fragment
+        SummerFragment summerPopup = new SummerFragment();
+
+        // Show it as a popup dialog
+        // "SummerPopup" is just a tag name, you can call it anything
+        summerPopup.show(getSupportFragmentManager(), "SummerPopup");
     }
 
     private void startBackgroundMusic() {
         mediaPlayer = MediaPlayer.create(this, R.raw.bg_maintheme);
         if (mediaPlayer != null) {
             mediaPlayer.setLooping(true);
-
             mediaPlayer.setVolume(2.5f, 2.5f);
             mediaPlayer.start();
         }
