@@ -30,12 +30,11 @@ public class MainActivity extends AppCompatActivity {
     private View flashOverlay;
     private MediaPlayer mediaPlayer;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        // Make the layout draw under the system bars (edge-to-edge)
+
+        // Edge-to-edge layout setup
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             getWindow().getAttributes().layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
@@ -58,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
         hideSystemUI();
         startBackgroundMusic();
 
-        // Start opening sequence
         startOpeningSequence();
     }
 
@@ -75,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         ObjectAnimator titleScaleX = ObjectAnimator.ofFloat(mainContent, View.SCALE_X, 0.5f, 1f);
         ObjectAnimator titleScaleY = ObjectAnimator.ofFloat(mainContent, View.SCALE_Y, 0.5f, 1f);
         ObjectAnimator titleAlpha = ObjectAnimator.ofFloat(mainContent, View.ALPHA, 0f, 1f);
-        
+
         AnimatorSet titleAnimation = new AnimatorSet();
         titleAnimation.playTogether(titleScaleX, titleScaleY, titleAlpha);
         titleAnimation.setDuration(1200);
@@ -87,13 +85,13 @@ public class MainActivity extends AppCompatActivity {
 
         AnimatorSet sequence = new AnimatorSet();
         sequence.playSequentially(flashOut, titleAnimation, tapAlpha);
-        
+
         sequence.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 flashOverlay.setVisibility(View.GONE);
-                animateTapToStart(); // Start pulsing animation
-                
+                animateTapToStart();
+
                 // Enable click only after sequence is done
                 findViewById(android.R.id.content).setOnClickListener(v -> {
                     playTapSfx();
@@ -101,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         });
-        
+
         sequence.start();
     }
 
@@ -111,14 +109,14 @@ public class MainActivity extends AppCompatActivity {
         flashOverlay.setVisibility(View.VISIBLE);
         ObjectAnimator flashIn = ObjectAnimator.ofFloat(flashOverlay, View.ALPHA, 0f, 1f);
         flashIn.setDuration(150);
-        
+
         ObjectAnimator flashOut = ObjectAnimator.ofFloat(flashOverlay, View.ALPHA, 1f, 0f);
         flashOut.setDuration(500);
 
         flashIn.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                showIntroScene();
+                showIntroScene(); // This now calls the method that loads SummerFragment
                 flashOut.start();
             }
         });
@@ -143,14 +141,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showIntroScene() {
-        mainContent.setVisibility(View.GONE);
-        tapToStartText.setVisibility(View.GONE);
+        // We DON'T hide mainContent anymore if you want to see it behind the popup.
+        // If you want the background black, keep mainContent.setVisibility(View.GONE);
 
-        IntroSceneFragment introFragment = new IntroSceneFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-        transaction.replace(R.id.fragment_container, introFragment);
-        transaction.commit();
+        // Create the fragment
+        SummerFragment summerPopup = new SummerFragment();
+
+        // Show it as a popup dialog
+        // "SummerPopup" is just a tag name, you can call it anything
+        summerPopup.show(getSupportFragmentManager(), "SummerPopup");
     }
 
     private void startBackgroundMusic() {
