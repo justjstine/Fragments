@@ -55,7 +55,7 @@ public class ChoicesSceneFragment extends Fragment {
         setupChoiceHover(choice1);
         setupChoiceHover(choice2);
         setupChoiceHover(choice3);
-        
+
         choice1.setOnClickListener(v -> goToEarthScene());
         choice2.setOnClickListener(v -> goToEarthScene());
         choice3.setOnClickListener(v -> goToEarthScene());
@@ -120,7 +120,7 @@ public class ChoicesSceneFragment extends Fragment {
             return false;
         });
     }
-    
+
     private void goToEarthScene() {
         if (getActivity() != null) {
             EarthSceneFragment earthSceneFragment = new EarthSceneFragment();

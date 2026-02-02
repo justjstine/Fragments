@@ -47,7 +47,13 @@
             android:shadowDx="5"
             android:shadowDy="5"
             android:shadowRadius="0.01" />
+
     </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <TextView
         android:id="@+id/tapToStartText"
@@ -64,11 +70,6 @@
         android:shadowDx="4"
         android:shadowDy="4"
         android:shadowRadius="0.01" />
-
-    <FrameLayout
-        android:id="@+id/fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
     <View
         android:id="@+id/flashOverlay"

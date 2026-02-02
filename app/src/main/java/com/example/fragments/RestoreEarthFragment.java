@@ -157,12 +157,14 @@ public class RestoreEarthFragment extends Fragment {
     }
 
     private void handleIconClick(ImageView icon) {
-        // Determine which season was clicked
+        if (icon == summerIcon) {
+            showIntroScene();
+            return;
+        }
+
         String season = "";
         if (icon == springIcon) {
             season = "SPRING";
-        } else if (icon == summerIcon) {
-            season = "SUMMER";
         } else if (icon == autumnIcon) {
             season = "AUTUMN";
         } else if (icon == winterIcon) {
@@ -184,6 +186,11 @@ public class RestoreEarthFragment extends Fragment {
         }
     }
 
+    private void showIntroScene() {
+        SummerFragment summerPopup = new SummerFragment();
+        summerPopup.show(getParentFragmentManager(), "SummerPopup");
+    }
+
     public void incrementFragmentCounter() {
         fragmentsRestored++;
         updateCounter();
@@ -203,7 +210,7 @@ public class RestoreEarthFragment extends Fragment {
         if (getActivity() != null) {
             androidx.fragment.app.FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
             transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-            transaction.replace(R.id.fragment_container, new ChoiceFragment());
+            transaction.replace(R.id.fragment_container, new ChoicesSceneFragment());
             transaction.addToBackStack(null);
             transaction.commit();
         }

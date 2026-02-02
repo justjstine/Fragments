@@ -90,7 +90,7 @@ public class PixelStarView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        
+
         // Don't animate in preview to save resources and avoid flicker
         boolean isPreview = isInEditMode();
 

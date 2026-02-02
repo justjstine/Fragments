@@ -128,7 +128,7 @@ public class EarthSceneFragment extends Fragment {
                                     speakerName.setText("-LUMA");
                                     speakerName.setTextColor(0xFF90EE90);
                                     dialogueText.setText("\"SOMETHING'S WRONG...\"");
-                                    
+
                                     // Fade in new dialogue
                                     dialogueText.setAlpha(1f);
                                     speakerName.setAlpha(0f);
@@ -164,7 +164,7 @@ public class EarthSceneFragment extends Fragment {
         // Opacity animation for both images
         ObjectAnimator opacityFade = ObjectAnimator.ofFloat(earthImage, "alpha", 1f, 0.6f);
         opacityFade.setDuration(2000);
-        
+
         ObjectAnimator crackOpacityFade = ObjectAnimator.ofFloat(earthCrackImage, "alpha", 1f, 0.6f);
         crackOpacityFade.setDuration(2000);
 
@@ -192,17 +192,17 @@ public class EarthSceneFragment extends Fragment {
                 crackingPlayer.start();
             }
         }
-        
+
         // Make earth_crack visible and start crossfade
         earthCrackImage.setVisibility(View.VISIBLE);
-        
+
         // Crossfade from earth to earth_crack while maintaining the same 0.6f opacity
         ObjectAnimator earthFadeOut = ObjectAnimator.ofFloat(earthImage, "alpha", 0.6f, 0f);
         earthFadeOut.setDuration(1500);
-        
+
         ObjectAnimator crackFadeIn = ObjectAnimator.ofFloat(earthCrackImage, "alpha", 0f, 0.6f);
         crackFadeIn.setDuration(1500);
-        
+
         ObjectAnimator shakeX = ObjectAnimator.ofFloat(earthImage, "translationX",
                 0, -40, 40, -40, 40, -30, 30, -20, 20, -15, 15, -10, 10, 0);
         shakeX.setDuration(1500);
@@ -212,7 +212,7 @@ public class EarthSceneFragment extends Fragment {
                 0, -30, 30, -30, 30, -20, 20, -15, 15, -10, 10, -5, 5, 0);
         shakeY.setDuration(1500);
         shakeY.setInterpolator(new LinearInterpolator());
-        
+
         // Apply same shake to crack image
         ObjectAnimator shakeCrackX = ObjectAnimator.ofFloat(earthCrackImage, "translationX",
                 0, -40, 40, -40, 40, -30, 30, -20, 20, -15, 15, -10, 10, 0);
@@ -244,16 +244,16 @@ public class EarthSceneFragment extends Fragment {
             @Override
             public void onAnimationEnd(Animator animation) {
                 dialogueContainer.setVisibility(View.INVISIBLE);
-                
+
                 // 2. Pan both earth images upward smoothly
                 ObjectAnimator earthPan = ObjectAnimator.ofFloat(earthImage, "translationY", 0f, -220f);
                 earthPan.setDuration(1500);
                 earthPan.setInterpolator(new AccelerateDecelerateInterpolator());
-                
+
                 ObjectAnimator crackPan = ObjectAnimator.ofFloat(earthCrackImage, "translationY", 0f, -220f);
                 crackPan.setDuration(1500);
                 crackPan.setInterpolator(new AccelerateDecelerateInterpolator());
-                
+
                 AnimatorSet panSet = new AnimatorSet();
                 panSet.playTogether(earthPan, crackPan);
                 panSet.addListener(new AnimatorListenerAdapter() {
@@ -356,7 +356,7 @@ public class EarthSceneFragment extends Fragment {
                 crackingBeforeExplosion.start();
             }
         }
-        
+
         earthCrackImage.setVisibility(View.VISIBLE);
 
         ObjectAnimator shakeCrackX = ObjectAnimator.ofFloat(earthCrackImage, "translationX",
@@ -426,12 +426,12 @@ public class EarthSceneFragment extends Fragment {
             typingHandler.removeCallbacks(typingRunnable);
         }
         stopTypingSfx();
-        
+
         dialogueContainer.setVisibility(View.VISIBLE);
         dialogueContainer.setAlpha(0f);
         dialogueText.setText("");
         speakerName.setText("");
-        
+
         ObjectAnimator fadeIn = ObjectAnimator.ofFloat(dialogueContainer, "alpha", 0f, 1f);
         fadeIn.setDuration(800);
         fadeIn.addListener(new AnimatorListenerAdapter() {
@@ -446,12 +446,12 @@ public class EarthSceneFragment extends Fragment {
     private void showDialogue1() {
         speakerName.setText("-LUMA");
         speakerName.setTextColor(0xFF90EE90);
-        
+
         dialogueText.setAlpha(1f);
         speakerName.setAlpha(0f);
-        
+
         speakerName.animate().alpha(1f).setDuration(800).start();
-        
+
         typeText("\"THE WORLD...\"", () -> new Handler(Looper.getMainLooper()).postDelayed(this::fadeToDialogue2, 2000));
     }
 
@@ -463,12 +463,12 @@ public class EarthSceneFragment extends Fragment {
     private void showDialogue2() {
         speakerName.setText("-KIBO");
         speakerName.setTextColor(0xFFD4AF37);
-        
+
         dialogueText.setAlpha(1f);
         speakerName.setAlpha(0f);
-        
+
         speakerName.animate().alpha(1f).setDuration(800).start();
-        
+
         typeText("\"IT'S BROKEN...\"", () -> new Handler(Looper.getMainLooper()).postDelayed(this::fadeToDialogue3, 2000));
     }
 
@@ -480,12 +480,12 @@ public class EarthSceneFragment extends Fragment {
     private void showDialogue3() {
         speakerName.setText("-KIBO");
         speakerName.setTextColor(0xFFD4AF37);
-        
+
         dialogueText.setAlpha(1f);
         speakerName.setAlpha(0f);
-        
+
         speakerName.animate().alpha(1f).setDuration(800).start();
-        
+
         typeText("\"IS THIS HOW YOU FEEL?\"", () -> new Handler(Looper.getMainLooper()).postDelayed(this::fadeToDialogue4, 2000));
     }
 
@@ -497,14 +497,14 @@ public class EarthSceneFragment extends Fragment {
     private void showDialogue4() {
         speakerName.setText("-LUMA");
         speakerName.setTextColor(0xFF90EE90);
-        
+
         dialogueText.setAlpha(1f);
         speakerName.setAlpha(0f);
 
         speakerName.animate().alpha(1f).setDuration(800).start();
-        
-        typeText("\"YOU MAY FEEL LIKE YOUR WORLD...\"", () -> 
-            new Handler(Looper.getMainLooper()).postDelayed(this::goToEarthToScene, 2000)
+
+        typeText("\"YOU MAY FEEL LIKE YOUR WORLD...\"", () ->
+                new Handler(Looper.getMainLooper()).postDelayed(this::goToEarthToScene, 2000)
         );
     }
 
@@ -517,7 +517,7 @@ public class EarthSceneFragment extends Fragment {
             transaction.commit();
         }
     }
-    
+
     private void typeText(String text, @Nullable Runnable onComplete) {
         if (typingRunnable != null) {
             typingHandler.removeCallbacks(typingRunnable);
@@ -544,7 +544,7 @@ public class EarthSceneFragment extends Fragment {
         };
         typingHandler.post(typingRunnable);
     }
-    
+
     private void startTypingSfx() {
         if (getContext() == null) return;
         stopTypingSfx();

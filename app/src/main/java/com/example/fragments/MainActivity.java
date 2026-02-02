@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
         // Make the layout draw under the system bars (edge-to-edge)
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         ObjectAnimator titleScaleX = ObjectAnimator.ofFloat(mainContent, View.SCALE_X, 0.5f, 1f);
         ObjectAnimator titleScaleY = ObjectAnimator.ofFloat(mainContent, View.SCALE_Y, 0.5f, 1f);
         ObjectAnimator titleAlpha = ObjectAnimator.ofFloat(mainContent, View.ALPHA, 0f, 1f);
-        
+
         AnimatorSet titleAnimation = new AnimatorSet();
         titleAnimation.playTogether(titleScaleX, titleScaleY, titleAlpha);
         titleAnimation.setDuration(1200);
@@ -87,13 +87,13 @@ public class MainActivity extends AppCompatActivity {
 
         AnimatorSet sequence = new AnimatorSet();
         sequence.playSequentially(flashOut, titleAnimation, tapAlpha);
-        
+
         sequence.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 flashOverlay.setVisibility(View.GONE);
                 animateTapToStart(); // Start pulsing animation
-                
+
                 // Enable click only after sequence is done
                 findViewById(android.R.id.content).setOnClickListener(v -> {
                     playTapSfx();
@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         });
-        
+
         sequence.start();
     }
 
@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         flashOverlay.setVisibility(View.VISIBLE);
         ObjectAnimator flashIn = ObjectAnimator.ofFloat(flashOverlay, View.ALPHA, 0f, 1f);
         flashIn.setDuration(150);
-        
+
         ObjectAnimator flashOut = ObjectAnimator.ofFloat(flashOverlay, View.ALPHA, 1f, 0f);
         flashOut.setDuration(500);
 
