@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- KIBO Dialogue (Left, Higher) -->
+    <LinearLayout
+        android:id="@+id/kiboDialogueContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="250dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="invisible"
+        android:alpha="0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.65"
+        app:layout_constraintHorizontal_bias="0.0">
+
+        <FrameLayout
+            android:id="@+id/kiboDialogueBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/dialog_background"
+            android:padding="16dp">
+
+
+            <TextView
+                android:id="@+id/kiboDialogueText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/home_video"
+                android:text="&quot;IT LOOKS BETTER... CALMER.&quot;"
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <!-- LUMA Dialogue (Right, Lower) -->
+    <LinearLayout
+        android:id="@+id/lumaDialogueContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="130dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="invisible"
+        android:alpha="0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.65"
+        app:layout_constraintHorizontal_bias="1.0">
+
+        <FrameLayout
+            android:id="@+id/lumaDialogueBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/dialog_background"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/lumaDialogueText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/home_video"
+                android:text="&quot;BECAUSE YOU GAVE IT SPACE TO HEAL.&quot;"
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <!-- KIBO Character (Above left dialogue, in front) -->
+    <ImageView
+        android:id="@+id/kiboCharacter"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="288dp"
+        android:alpha="0"
+        android:src="@drawable/pet_dog"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- LUMA Character (Above right dialogue, in front) -->
+    <ImageView
+        android:id="@+id/lumaCharacter"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginBottom="160dp"
+        android:alpha="0"
+        android:src="@drawable/pet_cat"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Final narrator dialogue and choices -->
+    <LinearLayout
+        android:id="@+id/finalDialogueContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="invisible"
+        android:alpha="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.42"
+        app:layout_constraintWidth_percent="0.75">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/dialog_background"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/finalDialogueText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/home_video"
+                android:text="YOU ARE NOT BROKEN. YOU ARE JUST RESETTING."
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/finalChoicesContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="40dp"
+        android:orientation="vertical"
+        android:visibility="invisible"
+        android:alpha="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/finalDialogueContainer">
+
+        <TextView
+            android:id="@+id/choiceRevisit"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/choice_button_background"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="@font/home_video"
+            android:gravity="center"
+            android:text="REVISIT A FRAGMENT"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:visibility="invisible"
+            android:alpha="0" />
+
+        <TextView
+            android:id="@+id/choiceNewJourney"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/choice_button_background"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="@font/home_video"
+            android:gravity="center"
+            android:text="START A NEW JOURNEY"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:visibility="invisible"
+            android:alpha="0" />
+
+        <TextView
+            android:id="@+id/choiceStay"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@drawable/choice_button_background"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="@font/home_video"
+            android:gravity="center"
+            android:text="SIMPLY STAY HERE IN THE QUIET"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:visibility="invisible"
+            android:alpha="0" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
