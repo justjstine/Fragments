@@ -12,6 +12,9 @@ import androidx.fragment.app.Fragment;
 
 public class WinterFragmentScene extends Fragment {
 
+    public static final String SELECTED_BUTTON_ID = "selected_button_id";
+    private View lastSelectedButton = null;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -25,8 +28,13 @@ public class WinterFragmentScene extends Fragment {
         View calm = view.findViewById(R.id.btnCalmPath);
 
         View.OnClickListener pathListener = v -> {
+            if (lastSelectedButton != null) {
+                lastSelectedButton.setActivated(false);
+            }
+            v.setActivated(true);
+            lastSelectedButton = v;
             playSparkleSound();
-            navigateToNextScene();
+            navigateToNextScene(v.getId());
         };
 
         quiet.setOnClickListener(pathListener);
@@ -46,9 +54,13 @@ public class WinterFragmentScene extends Fragment {
         }
     }
 
-    private void navigateToNextScene() {
+    private void navigateToNextScene(int selectedButtonId) {
         // Transition to the next logic class
         WinterFragmentScene1 nextScene = new WinterFragmentScene1();
+        Bundle args = new Bundle();
+        args.putInt(SELECTED_BUTTON_ID, selectedButtonId);
+        nextScene.setArguments(args);
+
         if (getParentFragmentManager() != null) {
             getParentFragmentManager().beginTransaction()
                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)

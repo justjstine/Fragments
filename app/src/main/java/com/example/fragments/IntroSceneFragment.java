@@ -47,8 +47,8 @@ public class IntroSceneFragment extends Fragment {
         dogImage.setImageResource(R.drawable.pet_dog);
         catImage.setImageResource(R.drawable.pet_cat);
 
-        startFloatingAnimation(dogImage, 0, 3200);
-        startFloatingAnimation(catImage, 400, 3200);
+        startFloatingAnimation(dogImage, 3200, -15f, 15f);
+        startFloatingAnimation(catImage, 3200, 15f, -15f);
 
         animateTapToContinue();
 
@@ -94,10 +94,9 @@ public class IntroSceneFragment extends Fragment {
         typingHandler.post(typingRunnable);
     }
 
-    private void startFloatingAnimation(View view, long delay, int duration) {
-        ObjectAnimator animator = ObjectAnimator.ofFloat(view, "translationY", -15f, 15f);
+    private void startFloatingAnimation(View view, int duration, float startY, float endY) {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(view, "translationY", startY, endY);
         animator.setDuration(duration);
-        animator.setStartDelay(delay);
         animator.setRepeatMode(ValueAnimator.REVERSE);
         animator.setRepeatCount(ValueAnimator.INFINITE);
         animator.setInterpolator(new AccelerateDecelerateInterpolator());

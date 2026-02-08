@@ -1,5 +1,7 @@
 package com.example.fragments;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -7,6 +9,8 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -33,8 +37,14 @@ public class ChoiceFragment extends Fragment {
         View choice1 = view.findViewById(R.id.choice1);
         View choice2 = view.findViewById(R.id.choice2);
         View choice3 = view.findViewById(R.id.choice3);
+        ImageView dogImage = view.findViewById(R.id.kiboCharacter);
+        ImageView catImage = view.findViewById(R.id.lumaCharacter);
 
         typeText(questionText, "HOW ARE YOU FEELING?");
+
+        // Start floating animations
+        startFloatingAnimation(dogImage, true);
+        startFloatingAnimation(catImage, false);
 
         View.OnClickListener goToEarth = v -> showEarthScene();
         choice1.setOnClickListener(goToEarth);
@@ -42,6 +52,18 @@ public class ChoiceFragment extends Fragment {
         choice3.setOnClickListener(goToEarth);
 
         return view;
+    }
+
+    private void startFloatingAnimation(View view, boolean isKibo) {
+        if (view == null) return;
+        float startY = isKibo ? 0f : -20f;
+        float endY = isKibo ? -20f : 0f;
+        ObjectAnimator animator = ObjectAnimator.ofFloat(view, View.TRANSLATION_Y, startY, endY);
+        animator.setDuration(1500);
+        animator.setRepeatMode(ValueAnimator.REVERSE);
+        animator.setRepeatCount(ValueAnimator.INFINITE);
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        animator.start();
     }
 
     private void showEarthScene() {

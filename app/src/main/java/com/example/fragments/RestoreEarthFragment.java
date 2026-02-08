@@ -4,7 +4,9 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Rect;
@@ -354,7 +356,7 @@ public class RestoreEarthFragment extends Fragment {
             kiboCharacter.animate()
                     .alpha(1f)
                     .setDuration(800)
-                    .withEndAction(() -> startFloatingAnimation(kiboCharacter))
+                    .withEndAction(() -> startFloatingAnimation(kiboCharacter, true))
                     .start();
         }
 
@@ -366,7 +368,7 @@ public class RestoreEarthFragment extends Fragment {
                     .setDuration(800)
                     .withEndAction(() -> {
                         // Start typing KIBO's dialogue
-                        typeKiboDialogue("\"IT LOOKS BETTER... CALMER.\"");
+                        typeKiboDialogue("IT LOOKS BETTER... CALMER.");
                         // Auto-advance to LUMA's dialogue after KIBO's text finishes + delay
                         typingHandler.postDelayed(() -> showLumaDialogue(), 1800);
                     })
@@ -381,7 +383,7 @@ public class RestoreEarthFragment extends Fragment {
             lumaCharacter.animate()
                     .alpha(1f)
                     .setDuration(800)
-                    .withEndAction(() -> startFloatingAnimation(lumaCharacter))
+                    .withEndAction(() -> startFloatingAnimation(lumaCharacter, false))
                     .start();
         }
 
@@ -392,7 +394,7 @@ public class RestoreEarthFragment extends Fragment {
                     .alpha(1f)
                     .setDuration(800)
                     .withEndAction(() -> {
-                        typeLumaDialogue("\"BECAUSE YOU GAVE IT SPACE TO HEAL.\"");
+                        typeLumaDialogue("BECAUSE YOU GAVE IT SPACE TO HEAL.");
                         // Wait for typing to finish, then wait 3 seconds before fading out
                         typingHandler.postDelayed(() -> fadeOutDialoguesAndTransition(), 2200 + 3000);
                     })
@@ -504,8 +506,10 @@ public class RestoreEarthFragment extends Fragment {
     }
 
 
-    private void startFloatingAnimation(View view) {
-        ObjectAnimator animator = ObjectAnimator.ofFloat(view, View.TRANSLATION_Y, 0f, -20f);
+    private void startFloatingAnimation(View view, boolean isKibo) {
+        float startY = isKibo ? 0f : -20f;
+        float endY = isKibo ? -20f : 0f;
+        ObjectAnimator animator = ObjectAnimator.ofFloat(view, View.TRANSLATION_Y, startY, endY);
         animator.setDuration(1500);
         animator.setRepeatMode(ValueAnimator.REVERSE);
         animator.setRepeatCount(ValueAnimator.INFINITE);

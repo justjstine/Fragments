@@ -29,6 +29,7 @@ public class WinterFragment extends Fragment {
     private TextView dogDialogue, catDialogue;
     private ImageView petDog, petCat;
     private View choicesLayout;
+    private View lastSelectedButton = null;
 
 
 
@@ -65,6 +66,11 @@ public class WinterFragment extends Fragment {
 // Click listeners for choices
 
         View.OnClickListener clickListener = v -> {
+            if (lastSelectedButton != null) {
+                lastSelectedButton.setActivated(false);
+            }
+            v.setActivated(true);
+            lastSelectedButton = v;
             playSparkleSound();
             navigateToScene();
         };

@@ -201,25 +201,6 @@ public class AutumnFragment extends Fragment {
         typingHandler.post(typingRunnable);
     }
 
-    private void typeTextNoSound(TextView textView, String fullText, Runnable onFinish) {
-        if (textView == null) return;
-        textView.setText("");
-        final int[] index = {0};
-        Runnable typingRunnable = new Runnable() {
-            @Override
-            public void run() {
-                if (index[0] <= fullText.length()) {
-                    textView.setText(fullText.substring(0, index[0]));
-                    index[0]++;
-                    typingHandler.postDelayed(this, 50);
-                } else {
-                    if (onFinish != null) onFinish.run();
-                }
-            }
-        };
-        typingHandler.post(typingRunnable);
-    }
-
     private void startTypingSfx() {
         if (typingPlayer != null) return;
         typingPlayer = MediaPlayer.create(getContext(), R.raw.sfx_typing);
@@ -287,12 +268,6 @@ public class AutumnFragment extends Fragment {
         ImageView frameImage = fragmentView.findViewById(R.id.frameImage);
         if (frameImage != null) {
             frameImage.setOnClickListener(v -> onCenterImageTapped(frameImage));
-        }
-        TextView tvCounter = fragmentView.findViewById(R.id.tvCounter);
-        if (tvCounter != null) {
-            String fullText = tvCounter.getText().toString();
-            tvCounter.setText("");
-            new Handler(Looper.getMainLooper()).postDelayed(() -> typeTextNoSound(tvCounter, fullText, null), 300);
         }
     }
 
